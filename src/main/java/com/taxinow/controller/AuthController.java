@@ -26,7 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final UserRepository userRepository;
     private final DriverRepository driverRepository;
@@ -48,7 +48,7 @@ public class AuthController {
         this.driverService = driverService;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/signup/user")
     public ResponseEntity<JwtResponse> signupHandler(@RequestBody SignupRequest req) throws UserException {
         String email = req.getEmail();
         String fullName = req.getFullName();

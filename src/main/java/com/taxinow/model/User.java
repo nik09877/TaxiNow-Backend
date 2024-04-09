@@ -4,6 +4,7 @@ import com.taxinow.domain.UserRole;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "TaxiUser")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,7 +24,7 @@ public class User {
 
     private UserRole role;
 
-    public User(){
+    public User() {
     }
 
     public Integer getId() {

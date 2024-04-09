@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -51,7 +52,8 @@ public class Ride {
     @Embedded
     private PaymentDetails paymentDetails = new PaymentDetails();
 
-    public Ride(){}
+    public Ride() {
+    }
 
     public Integer getId() {
         return id;

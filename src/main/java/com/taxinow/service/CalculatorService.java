@@ -28,9 +28,11 @@ public class CalculatorService {
 
     }
 
-    public long calculateDuration(LocalDateTime startTime, LocalDateTime endTime) {
+    public long calculateDuration(LocalDateTime startTime, LocalDateTime endTime, boolean inMilliSeconds) {
         Duration duration = Duration.between(startTime, endTime);
-        return duration.getSeconds();
+        if (inMilliSeconds)
+            return duration.toMillis();
+        return duration.toSeconds();
     }
 
     public double calculateFare(double distance) {
