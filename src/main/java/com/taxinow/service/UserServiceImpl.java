@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService {
 
         if (emailExist != null) throw new UserException("Email Already Used With Another Account");
 
-
         return userRepository.save(user);
 
     }
@@ -41,7 +40,7 @@ public class UserServiceImpl implements UserService {
         if (opt.isPresent()) {
             return opt.get();
         }
-        throw new UserException("user not found with id " + userId);
+        throw new UserException("User not found with id " + userId);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             return user;
         }
-        throw new UserException("user not found with email " + email);
+        throw new UserException("uUser not found with email " + email);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class UserServiceImpl implements UserService {
     public User findUserByToken(String token) throws UserException {
         String email = jwtUtil.getEmailFromJwt(token);
         if (email == null) {
-            throw new BadCredentialsException("invalid token recived");
+            throw new BadCredentialsException("invalid token received");
         }
         User user = userRepository.findByEmail(email);
 
@@ -85,7 +84,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Ride> completedRides(Integer userId) throws UserException {
-        List<Ride> completedRides = userRepository.getCompletedRides(userId);
-        return completedRides;
+        return userRepository.getCompletedRides(userId);
     }
 }

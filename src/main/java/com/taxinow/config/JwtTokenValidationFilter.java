@@ -20,35 +20,84 @@ import java.util.*;
 
 public class JwtTokenValidationFilter extends OncePerRequestFilter {
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-       String jwt = request.getHeader(JwtSecurityContext.JWT_HEADER);
-       if(jwt != null){
-           try{
-               //extract the word bearer [ex: Bearer feijrgeljdfsd]
-               jwt = jwt.substring(7);
-
-               //generate key
-               SecretKey key = Keys.hmacShaKeyFor(JwtSecurityContext.JWT_KEY.getBytes());
-
-               Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(jwt).getBody();
-
-               String username = String.valueOf(claims.get("email"));
-               String authorities = (String)claims.get("authorities");
-               List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-               Authentication auth = new UsernamePasswordAuthenticationToken(username,null,auths);
-
-               SecurityContextHolder.getContext().setAuthentication(auth);
-           }
-           catch (Exception e){
-               throw new BadCredentialsException("Invalid Token received...");
-           }
-       }
-       //go to next filter
-       filterChain.doFilter(request,response);
-    }
+//    @Override
+//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+//       String jwt = request.getHeader(JwtSecurityContext.JWT_HEADER);
+//       if(jwt != null){
+//           try{
+//               //extract the word bearer [ex: Bearer feijrgeljdfsd]
+//               jwt = jwt.substring(7);
+//
+//               //generate key
+//               SecretKey key = Keys.hmacShaKeyFor(JwtSecurityContext.JWT_KEY.getBytes());
+//
+//               Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(jwt).getBody();
+//
+//               String username = String.valueOf(claims.get("email"));
+//               String authorities = (String)claims.get("authorities");
+//               List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+//               Authentication auth = new UsernamePasswordAuthenticationToken(username,null,auths);
+//
+//               SecurityContextHolder.getContext().setAuthentication(auth);
+//           }
+//           catch (Exception e){
+//               throw new BadCredentialsException("Invalid Token received...");
+//           }
+//       }
+//       //go to next filter
+//       filterChain.doFilter(request,response);
+//    }
 
 //    protected boolean shouldNotFilter(HttpServletRequest req)throws ServletException{
 //        return req.getServletPath().equals("/api/auth/**");
 //    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String jwt = request.getHeader(JwtSecurityContext.JWT_HEADER);
+
+
+        if (jwt != null) {
+
+            try {
+
+                //extracting the word Bearer
+                jwt = jwt.substring(7);
+
+
+                SecretKey key = Keys.hmacShaKeyFor(JwtSecurityContext.JWT_KEY.getBytes());
+
+                Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+
+                String username = String.valueOf(claims.get("email"));
+
+                String authorities = (String) claims.get("authorities");
+
+                List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+
+                Authentication auth = new UsernamePasswordAuthenticationToken(username, null, auths);
+
+
+//				List<GrantedAuthority> authorities=(List<GrantedAuthority>)claims.get("authorities");
+//				Authentication auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
+
+            } catch (Exception e) {
+                throw new BadCredentialsException("Invalid Token received... error");
+            }
+
+
+        }
+
+        filterChain.doFilter(request, response);
+
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return request.getServletPath().equals("/api/auth/**");
+    }
 }
