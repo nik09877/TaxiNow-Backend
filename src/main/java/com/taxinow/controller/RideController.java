@@ -59,7 +59,7 @@ public class RideController {
 
         rideService.declineRide(rideId, driver.getId());
 
-        MessageResponse res = new MessageResponse("Ride decline By Driver");
+        MessageResponse res = new MessageResponse("Ride declined By Driver");
 
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
     }

@@ -150,9 +150,9 @@ send notification to driver
         driver.getRides().add(ride);
         driver.setCurrentRide(null);
 
-        Integer driverRevenue = (int) (driver.getTotalRevenue() + Math.round(fare * 0.8));
-        driver.setTotalRevenue(driverRevenue);
-        driverRepository.save(driver);
+//        Integer driverRevenue = (int) (driver.getTotalRevenue() + Math.round(fare * 0.8));
+//        driver.setTotalRevenue(driverRevenue);
+//        driverRepository.save(driver);
         rideRepository.save(ride);
         /*
          Notification notification = new Notification();

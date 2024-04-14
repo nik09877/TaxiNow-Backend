@@ -123,6 +123,7 @@ public class AuthController {
         Authentication authentication = authenticate(email, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+
         //create jsw response
         String jwt = jwtUtil.generateJwtToken(authentication);
         JwtResponse res = new JwtResponse();
@@ -130,7 +131,18 @@ public class AuthController {
         res.setAuthenticated(true);
         res.setError(false);
         res.setErrorDetails(null);
-        res.setType(UserRole.USER);
+
+        User user = userRepository.findByEmail(email);
+
+        if (user != null) {
+            res.setType(UserRole.USER);
+        } else {
+            Driver driver = driverRepository.findByEmail(email);
+            if (driver != null) {
+                res.setType(UserRole.DRIVER);
+            }
+        }
+
         res.setMessage("LoggedIn to account successfully");
 
         return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
@@ -139,11 +151,11 @@ public class AuthController {
     private Authentication authenticate(String email, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         if (userDetails == null) {
-            throw new BadCredentialsException("Invalid Email or Password from authenticate method");
+            throw new BadCredentialsException("Invalid Email or Password");
         }
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Invalid Password from authenticate method");
+            throw new BadCredentialsException("Invalid Password");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
